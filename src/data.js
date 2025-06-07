@@ -71,7 +71,7 @@ export const cryptoData = {
       marketCap: 152809321235.379,
       availableSupply: 152732954758,
       totalSupply: 152732954758,
-      fullyDilutedValuation": 152809321235.379,
+      fullyDilutedValuation: 152809321235.379,
       priceChange1h: 0.02,
       priceChange1d: 0.02,
       priceChange1w: 0.03,
