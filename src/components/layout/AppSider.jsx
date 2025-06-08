@@ -1,8 +1,8 @@
-import { Layout, Card, Statistic, List, Typography, Spin } from 'antd';
+import { Layout, Card, Statistic, List, Typography, Spin, Tag } from 'antd';
 import { ArrowDownOutlined, ArrowUpOutlined } from '@ant-design/icons';
 import { useEffect, useState } from 'react';
 import { fetchAssets, fakeFetchCrypto } from '../../api';
-import { percentDifference } from '../../utils';
+import { percentDifference, capitallize } from '../../utils';
 
 const siderStyle = {
 padding: '1rem'
@@ -45,7 +45,7 @@ export default function AppSider() {
       {assets.map(asset => (
         <Card key={asset.id} style={{marginBottom: '1rem'}}>
         <Statistic
-          title = {asset.id}
+          title = {capitallize(asset.id)}
           value={asset.totalAmount}
           precision={2}
           valueStyle={{ color: asset.grow ? '#3f8600' : '#cf1322' }}
@@ -54,28 +54,24 @@ export default function AppSider() {
         </Statistic>
         <List size="small"
           dataSource={[
-            {title: 'Итоговая прибыль', value: asset.totalProfit},
-            {title: 'Количество монет', value: asset.amount},
-            {title: 'Разница %', value: asset.growPercent}
+            {title: 'Итоговая прибыль', value: asset.totalProfit, withTag: true},
+            {title: 'Количество монет', value: asset.amount, isPlain: true},
+            // {title: 'Разница %', value: asset.growPercent}
           ]}
           renderItem={(item) => (
           <List.Item>
-          <span>{item.title}</span>
-          <span>{item.value}</span>
+            <span>{item.title}</span>
+            <span>
+              {item.withTag && <Tag color={asset.grow ? 'green' : 'red'}>{asset.growPercent}%</Tag>}
+              {item.isPlain && item.value}
+              {!item.isPlain && (
+                <Typography.Text type={asset.grow ? 'success' : 'danger'}>{item.value.toFixed(2)}$</Typography.Text>
+              )}
+            </span>
+          
           </List.Item>)}
         />
       </Card>
       ))}
-      
-      {/* <Card>
-        <Statistic
-          title="Idle"
-          value={9.3}
-          precision={2}
-          valueStyle={{ color: '#cf1322' }}
-          prefix={<ArrowDownOutlined />}
-          suffix="%">
-        </Statistic>
-      </Card> */}
     </Layout.Sider>)
 }
