@@ -10,7 +10,7 @@ export default function App () {
   <Layout>
     <AppHeader>Header</AppHeader>
     <Layout>
-      <AppSider>Sider</AppSider>
+      <AppSider></AppSider>
       <AppContent>Content</AppContent>
     </Layout>
   </Layout>

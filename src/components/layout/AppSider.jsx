@@ -2,18 +2,11 @@ import { Layout, Card, Statistic, List, Typography, Spin } from 'antd';
 import { ArrowDownOutlined, ArrowUpOutlined } from '@ant-design/icons';
 import { useEffect, useState } from 'react';
 import { fetchAssets, fakeFetchCrypto } from '../../api';
+import { percentDifference } from '../../utils';
 
 const siderStyle = {
 padding: '1rem'
 };
-
-const data = [
-  'Racing car sprays burning fuel into crowd.',
-  'Japanese princess to wed commoner.',
-  'Australian walks 100km after outback crash.',
-  'Man charged over missing wedding girl.',
-  'Los Angeles battles huge wildfires.',
-];
 
 export default function AppSider() {
   const [loading, setLoading] = useState(false)
@@ -26,7 +19,17 @@ export default function AppSider() {
         const { result } = await fakeFetchCrypto()
         const assets = await fetchAssets()
 
-        setAssets(assets)
+        setAssets(assets.map(asset => {
+          const coin = result.find((c) => c.id === asset.id)
+          return {
+            grow: asset.price < coin.price, //рост/падение цены монеты с момента покупки
+            growPercent: percentDifference(asset.price, coin.price), //процент роста/падения монеты
+            totalAmount: asset.amount * coin.price, //сколько в деньгах у нас есть конкретной монеты 
+            totalProfit: asset.amount * coin.price - asset.amount * asset.price, //сколько заработали/потеряли 
+
+            ...asset
+          }
+        }))
         setCrypto(result)
         setLoading(false)
       }
@@ -39,24 +42,32 @@ export default function AppSider() {
     
   return (
     <Layout.Sider width="25%" style={siderStyle}>
-      <Card style={{marginBottom: '1 rem'}}>
+      {assets.map(asset => (
+        <Card key={asset.id} style={{marginBottom: '1rem'}}>
         <Statistic
-          title = "Active"
-          value={11.28}
+          title = {asset.id}
+          value={asset.totalAmount}
           precision={2}
-          valueStyle={{ color: '#3f8600' }}
-          prefix={<ArrowUpOutlined />}
-          suffix="%">
+          valueStyle={{ color: asset.grow ? '#3f8600' : '#cf1322' }}
+          prefix={asset.grow ? <ArrowUpOutlined /> : <ArrowDownOutlined/>}
+          suffix="$">
         </Statistic>
         <List size="small"
-          dataSource={data}
-          renderItem={item => (
+          dataSource={[
+            {title: 'Итоговая прибыль', value: asset.totalProfit},
+            {title: 'Количество монет', value: asset.amount},
+            {title: 'Разница %', value: asset.growPercent}
+          ]}
+          renderItem={(item) => (
           <List.Item>
-          <Typography.Text mark>[ITEM]</Typography.Text> {item}
+          <span>{item.title}</span>
+          <span>{item.value}</span>
           </List.Item>)}
         />
       </Card>
-      <Card>
+      ))}
+      
+      {/* <Card>
         <Statistic
           title="Idle"
           value={9.3}
@@ -65,6 +76,6 @@ export default function AppSider() {
           prefix={<ArrowDownOutlined />}
           suffix="%">
         </Statistic>
-      </Card>
+      </Card> */}
     </Layout.Sider>)
 }
