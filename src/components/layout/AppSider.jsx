@@ -4,6 +4,7 @@ import { capitallize } from '../../utils';
 import { useContext } from 'react';
 import CryptoContext from '../../context/crypto-context';
 
+
 const siderStyle = {
 padding: '1rem'
 };
