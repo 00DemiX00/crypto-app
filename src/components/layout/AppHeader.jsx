@@ -1,5 +1,7 @@
-import { Layout, Select, Space, Button } from 'antd';
+import { Layout, Select, Space, Button, Modal } from 'antd';
 import { useCrypto } from '../../context/crypto-context';
+import { useEffect, useState } from 'react';
+import CoinInfoModal from './CryptoCoinInfoModal';
 
 const headerStyle = {
   width: '100%',
@@ -15,40 +17,35 @@ const headerStyle = {
 const handleChange = value => {
   console.log(`selected ${value}`);
 };
-// const options = [
-//   {
-//     label: 'China',
-//     value: 'china',
-//     emoji: '🇨🇳',
-//     desc: 'China (中国)',
-//   },
-//   {
-//     label: 'USA',
-//     value: 'usa',
-//     emoji: '🇺🇸',
-//     desc: 'USA (美国)',
-//   },
-//   {
-//     label: 'Japan',
-//     value: 'japan',
-//     emoji: '🇯🇵',
-//     desc: 'Japan (日本)',
-//   },
-//   {
-//     label: 'Korea',
-//     value: 'korea',
-//     emoji: '🇰🇷',
-//     desc: 'Korea (韩国)',
-//   },
-// ];
 
 export default function AppHeader() {
-    const {crypto} = useCrypto()
+  const [select, setSelect] = useState(false)
+  const [modal, setModal] = useState()
+   const [coin, setCoin] = useState(null)
+  const {crypto} = useCrypto()
+    
+  useEffect(() => {
+    const keypress = event => {
+      if (event.key === '/') {
+        setSelect((prev) => !prev)
+      }
+    }
+    document.addEventListener('keypress', keypress)
+    return () => document.removeEventListener('keypress', keypress)
+  }, [])
+    
+    function handleSelect(value) {
+      setModal(true)
+      setCoin(crypto.find(c => c.id === value))
+    }
+
     return (<Layout.Header style={headerStyle}>
        <Select
     style={{ width: 250 }}
+    open={select}
+    onSelect={handleSelect}
+    onClick={() => setSelect((prev) => !prev)}
     value="press / to open"
-    optionLabelProp="label"
     options={crypto.map(coin => ({
       label: coin.name,
       value: coin.id,
@@ -65,5 +62,14 @@ export default function AppHeader() {
     )}
   />
    <Button type="primary">Primary Button</Button>
+
+  <Modal 
+        open={modal}
+        onCancel={() => setModal(false)}
+        footer={null}>
+          <CoinInfoModal coin={coin}></CoinInfoModal>
+  </Modal>
+
+
     </Layout.Header>)
 }
