@@ -1,6 +1,6 @@
 import { Flex, Typography } from "antd"
 
-function CoinInfo({coin}) {
+function CoinInfo({coin, withSymbol}) {
     return (<Flex align="center">
             <img 
                 src={coin.icon} 
@@ -9,7 +9,7 @@ function CoinInfo({coin}) {
                 marginRight: 10}}>
             </img>
             <Typography.Title level={2} style={{margin: 0}}>
-             {coin.name}
+             {withSymbol && coin.symbol} {coin.name}
             </Typography.Title>
     </Flex>)
 }
