@@ -28,13 +28,13 @@ export default function AppSider() {
           dataSource={[
             {title: 'Итоговая прибыль', value: asset.totalProfit, withTag: true},
             {title: 'Количество монет', value: asset.amount, isPlain: true},
-            // {title: 'Разница %', value: asset.growPercent}
+            //{title: 'Разница %', value: asset.growPercent}
           ]}
           renderItem={(item) => (
           <List.Item>
             <span>{item.title}</span>
             <span>
-              {item.withTag && <Tag color={asset.grow ? 'green' : 'red'}>{asset.growPercent}%</Tag>}
+              {item.withTag && typeof asset.growPercent === 'number' && (<Tag color={asset.grow ? 'green' : 'red'}>{asset.growPercent}%</Tag>) }
               {item.isPlain && item.value}
               {!item.isPlain && (
                 <Typography.Text type={asset.grow ? 'success' : 'danger'}>{item.value.toFixed(2)}$</Typography.Text>

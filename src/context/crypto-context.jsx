@@ -13,33 +13,43 @@ export function CryptoContextProvider({children}) {
     const [loading, setLoading] = useState(false)
     const [crypto, setCrypto] = useState([])
     const [assets, setAssets] = useState([])
+
+  function mapAssets(assets, result) {
+    return assets.map((asset) => {
+      const coin = result.find((c) => c.id === asset.id)
+      console.log('asset.price:', asset.price, 'coin.price:', coin.price);
+    return {
+      grow: asset.price < coin.price, //рост/падение цены монеты с момента покупки
+      growPercent: percentDifference(Number(asset.price), Number(coin.price)), //процент роста/падения монеты
+      totalAmount: asset.amount * coin.price, //сколько в деньгах у нас есть конкретной монеты 
+      totalProfit: asset.amount * coin.price - asset.amount * asset.price, //сколько заработали/потеряли 
+
+        ...asset
+      }
+    })
+  }
+
   
-  useEffect(() =>{
+  useEffect(() => {
       async function preload() {
         setLoading(true)
         const { result } = await fakeFetchCrypto()
         const assets = await fetchAssets()
 
-        setAssets(assets.map(asset => {
-          const coin = result.find((c) => c.id === asset.id)
-          return {
-            grow: asset.price < coin.price, //рост/падение цены монеты с момента покупки
-            growPercent: percentDifference(asset.price, coin.price), //процент роста/падения монеты
-            totalAmount: asset.amount * coin.price, //сколько в деньгах у нас есть конкретной монеты 
-            totalProfit: asset.amount * coin.price - asset.amount * asset.price, //сколько заработали/потеряли 
-
-            ...asset
-          }
-        }))
+        setAssets(mapAssets(assets, result))
         setCrypto(result)
         setLoading(false)
       }
       preload()
     }, [])
 
-    return <CryptoContext.Provider value={{loading, crypto, assets}}>{children}</CryptoContext.Provider>
-}
 
+    function addAsset(newAsset) {
+      setAssets((prev) => mapAssets([...prev, newAsset], crypto))
+    }
+
+    return <CryptoContext.Provider value={{loading, crypto, assets, addAsset}}>{children}</CryptoContext.Provider>
+}
 export default CryptoContext
 
 export function useCrypto() {

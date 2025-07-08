@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState, useRef } from "react"
 import { Select, Space, Typography, Flex, Divider, Form, Input, InputNumber, Button, DatePicker, Result } from "antd"
 import { useCrypto } from "../context/crypto-context"
 import CoinInfo from "./CoinInfo"
@@ -16,15 +16,16 @@ const validateMessages = {
 
 export default function AddAssetform({onClose}) {
   const [form] = Form.useForm()  
-  const {crypto} = useCrypto()
+  const {crypto, addAsset} = useCrypto()
   const [coin, setCoin] = useState(null)
   const [submitted, setSubmitted] = useState(false)
+  const assetRef = useRef()
 
 if (submitted) {
   return (<Result
     status="success"
     title="New Asset Added"
-    subTitle={`Added ${42} of ${coin.name} by price ${24}`}
+    subTitle={`Added ${assetRef.current.amount} of ${coin.name} by price ${assetRef.current.price}`}
     extra={[
       <Button type="primary" key="console" onClick={onClose}>
         Close
@@ -65,7 +66,9 @@ if (submitted) {
           price: values.price,
           date: values.date?.$d ?? new Date(),
         }
+        assetRef.current = newAsset
         setSubmitted(true)
+        addAsset(newAsset)
     }
 
     function handleAmountChange(value) {
@@ -90,7 +93,7 @@ function handlePriceChange(value) {
         labelCol={{ span: 4 }}
         wrapperCol={{ span: 10 }}
         style={{ maxWidth: 600 }}
-        initialValues={{price: coin.price.toFixed(2)}}
+        initialValues={{price: coin.price.toFixed(2), date: null, total: (0).toFixed(2)}}
         onFinish={onFinish}
         validateMessages={validateMessages}
   >
@@ -112,7 +115,7 @@ function handlePriceChange(value) {
 
     <Form.Item
       label="Дата и время"
-      name="дата">
+      name="date">
       <DatePicker showTime></DatePicker>
     </Form.Item>
 
