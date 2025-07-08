@@ -14,24 +14,23 @@ const validateMessages = {
   }
 }
 
-export default function AddAssetform({onclose}) {
+export default function AddAssetform({onClose}) {
   const [form] = Form.useForm()  
   const {crypto} = useCrypto()
   const [coin, setCoin] = useState(null)
   const [submitted, setSubmitted] = useState(false)
 
 if (submitted) {
-  <Result
+  return (<Result
     status="success"
     title="New Asset Added"
     subTitle={`Added ${42} of ${coin.name} by price ${24}`}
     extra={[
-      <Button type="primary" key="console" onClick={onclose}>
+      <Button type="primary" key="console" onClick={onClose}>
         Close
-      </Button>,
-      <Button key="buy">Buy Again</Button>,
+      </Button>
     ]}
-  />
+  />)
 }
 
     if (!coin) {
@@ -60,7 +59,12 @@ if (submitted) {
         }
     
     function onFinish(values) {
-        console.log('finish', values)
+        const newAsset = {
+          id: coin.id,
+          amount: values.amount,
+          price: values.price,
+          date: values.date?.$d ?? new Date(),
+        }
         setSubmitted(true)
     }
 
