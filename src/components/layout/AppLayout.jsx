@@ -13,10 +13,10 @@ export default function AppLayout() {
     }
     
     return <Layout>
-      <AppHeader>Header</AppHeader>
+      <AppHeader></AppHeader>
       <Layout>
         <AppSider></AppSider>
-        <AppContent>Content</AppContent>
+        <AppContent></AppContent>
       </Layout>
     </Layout>
 }

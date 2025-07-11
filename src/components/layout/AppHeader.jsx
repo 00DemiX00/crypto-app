@@ -46,7 +46,7 @@ export default function AppHeader() {
     open={select}
     onSelect={handleSelect}
     onClick={() => setSelect((prev) => !prev)}
-    value="press / to open"
+    value="Список криптовалют"
     options={crypto.map(coin => ({
       label: coin.name,
       value: coin.id,
@@ -62,7 +62,7 @@ export default function AppHeader() {
       </Space>
     )}
   />
-   <Button type="primary" onClick={() => setDrawer(true)}>Primary Button</Button>
+   <Button type="primary" onClick={() => setDrawer(true)}>Добавить монету</Button>
 
   <Modal 
         open={modal}
@@ -73,7 +73,7 @@ export default function AppHeader() {
 
   <Drawer
         width={600}
-        title="Basic Drawer"
+        title="Добавить монету"
         onClose={() => setDrawer(false)}
         open={drawer}
         destroyOnClose>

@@ -22,7 +22,7 @@ export default function AppContent() {
     return (
     <Layout.Content style={contentStyle}>
       <Typography.Title level={3} style={{textAlign: 'left', color: '#fff'}}>
-        Portfolio: {''} 
+        Сумма портфеля: {''} 
         {assets
         .map(asset => {return asset.amount * cryptoPriceMap[asset.id]})
         .reduce((acc, v) => (acc += v), 0)
